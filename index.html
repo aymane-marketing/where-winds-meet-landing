@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Where Winds Meet - Neural Link Experience</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Noto+Serif+SC:wght@300;400;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --ghost-white: #F8F8FF;
+      --scholars-ink: #1A1A1B;
+      --neon-cinnabar: #FF4433;
+      --ink-wash-overlay: rgba(26, 26, 27, 0.85);
+      --hologram-grid: rgba(248, 248, 255, 0.05);
+      --cinnabar-glow: 0 0 24px rgba(255, 68, 51, 0.6);
+      
+      --font-hologram: 'Space Mono', monospace;
+      --font-calligraphy: 'Noto Serif SC', serif;
+      
+      --transition-synaptic: 150ms cubic-bezier(0.1, 0.9, 0.2, 1);
+      --transition-fluid: 600ms cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    body {
+      background-color: var(--scholars-ink);
+      color: var(--ghost-white);
+      font-family: var(--font-hologram);
+      overflow-x: hidden;
+      margin: 0;
+    }
+
+    h1, h2, h3, .calligraphy {
+      font-family: var(--font-calligraphy);
+    }
+
+    /* Background Video Layer */
+    .bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: -2;
+      opacity: 0.6;
+      filter: grayscale(40%) contrast(1.2);
+    }
+    .bg-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(to bottom, var(--ink-wash-overlay), rgba(26,26,27,0.5)),
+                  repeating-linear-gradient(0deg, transparent, transparent 2px, var(--hologram-grid) 2px, var(--hologram-grid) 4px);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Navigation */
+    .wind-nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 50;
+      transition: backdrop-filter var(--transition-synaptic), filter var(--transition-synaptic);
+      border-bottom: 1px solid rgba(248, 248, 255, 0.1);
+    }
+    
+    .nav-blur {
+      filter: blur(8px) contrast(1.5);
+      opacity: 0.7;
+    }
+
+    .nav-clear {
+      filter: blur(0px);
+      opacity: 1;
+      backdrop-filter: blur(12px);
+      background: rgba(26, 26, 27, 0.4);
+    }
+
+    /* CTA Button */
+    .pulse-btn {
+      background: transparent;
+      border: 1px solid var(--neon-cinnabar);
+      color: var(--neon-cinnabar);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      transition: all var(--transition-synaptic);
+      position: relative;
+      overflow: hidden;
+    }
+    .pulse-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: var(--neon-cinnabar);
+      transition: all var(--transition-fluid);
+      z-index: -1;
+    }
+    .pulse-btn:hover {
+      color: var(--scholars-ink);
+      box-shadow: var(--cinnabar-glow);
+      transform: scale(1.05);
+    }
+    .pulse-btn:hover::before {
+      left: 0;
+    }
+
+    /* Neon Accents */
+    .neon-text {
+      color: var(--neon-cinnabar);
+      text-shadow: 0 0 10px rgba(255, 68, 51, 0.5);
+    }
+
+    .glass-panel {
+      background: rgba(26, 26, 27, 0.6);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(248, 248, 255, 0.1);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+
+    /* Combat Hologram */
+    .combat-hologram {
+      position: relative;
+      transition: all var(--transition-fluid);
+      transform-style: preserve-3d;
+      perspective: 1000px;
+    }
+    .combat-hologram video {
+      border: 1px solid rgba(255, 68, 51, 0.3);
+      filter: sepia(0.2) hue-rotate(-20deg) saturation(1.5);
+      transition: all 0.4s ease;
+    }
+    .combat-hologram:hover video {
+      filter: none;
+      box-shadow: var(--cinnabar-glow);
+      transform: rotateY(-5deg) rotateX(5deg) scale(1.02);
+    }
+    .hologram-ui {
+      opacity: 0;
+      transition: opacity var(--transition-synaptic);
+    }
+    .combat-hologram:hover .hologram-ui {
+      opacity: 1;
+    }
+
+    /* World Map Section */
+    .world-map-section {
+      position: relative;
+      overflow: hidden;
+    }
+    .world-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 120%;
+      object-fit: cover;
+      transform: translateY(0);
+      z-index: 0;
+      opacity: 0.4;
+      transition: transform 0.1s linear;
+    }
+    
+    /* Glitch Effect on load */
+    @keyframes glitch {
+      0% { transform: translateY(0); filter: hue-rotate(0deg); }
+      10% { transform: translateX(5px) translateY(-5px); filter: hue-rotate(90deg); }
+      20% { transform: translateX(-5px) translateY(5px); filter: hue-rotate(-90deg); color: var(--neon-cinnabar); }
+      30% { transform: translateY(0); filter: hue-rotate(0deg); }
+      100% { transform: translateY(0); }
+    }
+    .glitch-anim {
+      animation: glitch 3s infinite;
+    }
+
+    #mobile-block { display: none; }
+    @media (max-width: 1024px) {
+      body > :not(#mobile-block) { display: none !important; }
+      #mobile-block {
+        display: flex;
+        position: fixed;
+        inset: 0;
+        background: var(--scholars-ink);
+        color: var(--neon-cinnabar);
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-family: var(--font-calligraphy);
+        font-size: 2rem;
+        padding: 2rem;
+        z-index: 9999;
+      }
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-[#FF4433] selection:text-[#1A1A1B]">
+
+  <!-- WebGPU/Video Background Layer -->
+  <div id="mobile-block">Available on Desktop Only.</div>
+  <video class="bg-canvas" autoplay loop muted playsinline src="v1_161_en_方_河伯冯如之_25s_刘贺_弗来_all.mp4"></video>
+  <div class="bg-overlay"></div>
+
+  <!-- Main Container -->
+  <main id="holo-core" class="relative w-full h-full min-h-screen z-10">
+
+    <!-- Wind-Drive Navigation -->
+    <nav id="wind-nav" class="wind-nav nav-clear px-8 py-4 flex justify-between items-center">
+      <div class="text-2xl font-bold tracking-widest calligraphy">WWM <span class="neon-text font-hologram text-sm ml-2">[v2.0.50]</span></div>
+      
+      <div class="hidden md:flex gap-8 text-sm uppercase tracking-widest">
+        <a href="#hero" class="hover:text-[#FF4433] transition-colors duration-300">Neural Sync</a>
+        <a href="#identity" class="hover:text-[#FF4433] transition-colors duration-300">Neural Mapping</a>
+        <a href="#world" class="hover:text-[#FF4433] transition-colors duration-300">World-Seed</a>
+      </div>
+
+      <a href="https://to.wendiro.com/u?k=9db47141846349488810b469b5a18a32&via=30942" target="_blank" class="pulse-btn inline-block px-6 py-2 text-sm font-semibold rounded-sm">
+        Download for Windows Now
+      </a>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="h-screen flex flex-col justify-center items-center text-center px-4 pt-20">
+      <h1 class="text-6xl md:text-8xl calligraphy font-bold mb-6 tracking-tight drop-shadow-2xl">
+        <span class="block text-4xl mb-4 text-[#F8F8FF] opacity-80 font-hologram uppercase tracking-[0.3em] text-sm md:text-lg">Project Digital Ink & Iron</span>
+        WHERE WINDS <span class="neon-text italic pr-4">MEET</span>
+      </h1>
+      <p class="max-w-2xl text-lg md:text-xl text-[#F8F8FF] opacity-80 mb-10 leading-relaxed">
+        Establish quantum connection. 10th-Century convergence initiated. Your neural footprint shapes the Jianghu simulation.<br><br>
+        Where Winds Meet drops you into China’s Five Dynasties and Ten Kingdoms period, a time of upheaval, change, and opportunity. It’s a true living world, filled with branching stories, side quests, and choices that matter.
+      </p>
+      
+      <div class="flex flex-col sm:flex-row gap-6">
+        <a href="https://to.wendiro.com/u?k=9db47141846349488810b469b5a18a32&via=30942" target="_blank" class="pulse-btn inline-block px-10 py-4 text-lg font-bold">
+          Pre-Register Now
+        </a>
+      </div>
+
+      <!-- Scroll Indicator -->
+      <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center opacity-60">
+        <span class="text-xs mb-2 tracking-[0.2em] uppercase">Scroll to Descend</span>
+        <div class="w-[1px] h-12 bg-gradient-to-b from-transparent via-[#FF4433] to-transparent animate-pulse"></div>
+      </div>
+    </section>
+
+    <!-- Identity Shaping Section -->
+    <section id="identity" class="min-h-screen py-32 px-4 md:px-12 flex flex-col lg:flex-row items-center justify-between gap-16 relative">
+      
+      <!-- Background HUD Element -->
+      <div class="absolute inset-0 pointer-events-none overflow-hidden opacity-20">
+        <div class="w-[800px] h-[800px] border border-[#FF4433] rounded-full absolute -top-[400px] -right-[200px] animate-[spin_60s_linear_infinite]"></div>
+        <div class="w-[600px] h-[600px] border border-dashed border-[#F8F8FF] rounded-full absolute -top-[300px] -right-[100px] animate-[spin_40s_linear_infinite_reverse]"></div>
+      </div>
+
+      <div class="lg:w-1/2 max-w-xl z-20">
+        <!-- Tech Hook -->
+        <div class="inline-flex items-center gap-2 mb-6 border border-[#FF4433]/40 bg-[#1A1A1B]/60 px-4 py-2 text-xs font-mono text-[#FF4433] uppercase tracking-widest backdrop-blur-sm">
+          <span class="w-2 h-2 rounded-full bg-[#FF4433] animate-pulse"></span>
+          Neural Mapping: Active | Biometrics: Syncing
+        </div>
+
+        <h2 class="text-4xl md:text-6xl calligraphy font-bold mb-6 tracking-tight">
+          Shape Your Avatar.<br>
+          <span class="text-[#FF4433]">Define Your Identity.</span>
+        </h2>
+        
+        <p class="text-lg opacity-90 mb-8 leading-relaxed font-hologram">
+          Dive into an insanely detailed neural-linked character creator. Sculpt every feature, define every detail, and truly become one with the Jianghu simulation.
+        </p>
+        
+        <!-- Primary CTA -->
+        <div class="mb-10">
+          <a href="https://to.wendiro.com/u?k=9db47141846349488810b469b5a18a32&via=30942" target="_blank" class="pulse-btn inline-block px-12 py-5 text-xl font-bold bg-[#FF4433]/10 hover:bg-[#FF4433] shadow-[0_0_20px_rgba(255,68,51,0.3)]">
+            DOWNLOAD FOR PC
+          </a>
+          <p class="mt-3 text-[#F8F8FF]/60 text-xs font-mono tracking-widest uppercase">
+            Join 5M+ Wanderers | Free to Play
+          </p>
+        </div>
+
+        <!-- Frame Data Tray -->
+        <div class="flex items-center gap-4 text-[10px] text-[#F8F8FF]/50 uppercase tracking-[0.2em] font-mono border-t border-[#F8F8FF]/10 pt-6">
+          <span class="text-[#F8F8FF]/80">System Parameters:</span>
+          <div class="flex gap-3">
+            <span>BONE SCULPT: UNLOCKED</span>
+            <span class="w-1 h-1 rounded-full bg-[#FF4433]/50"></span>
+            <span>SKIN RENDER: 4K</span>
+            <span class="w-1 h-1 rounded-full bg-[#FF4433]/50"></span>
+            <span>LIMITS: OFF</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:w-1/2 flex justify-center w-full z-20">
+        <!-- Clean Video Container without scanning lines -->
+        <div class="relative w-full max-w-[500px] transition-all duration-700 hover:scale-[1.02]">
+          <!-- Main Character Video -->
+          <video class="w-full rounded-lg relative z-10 opacity-95 border border-[#FF4433]/30 shadow-[0_0_50px_rgba(255,68,51,0.15)] group-hover:shadow-[0_0_60px_rgba(255,68,51,0.3)]" autoplay loop muted playsinline src="v2_246_en_竖_最强捏脸大赛_44s_梁颖楷_70200_all.mp4"></video>
+          
+          <!-- Minimal Aesthetic Bordering (No intruding lines on face) -->
+          <div class="absolute inset-0 z-20 pointer-events-none rounded-lg overflow-hidden">
+            <!-- Corner Brackets -->
+            <div class="absolute top-4 left-4 border-l-2 border-t-2 border-[#FF4433] w-6 h-6 opacity-70"></div>
+            <div class="absolute bottom-4 right-4 border-r-2 border-b-2 border-[#FF4433] w-6 h-6 opacity-70"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- World-Seed Map Section -->
+    <section id="world" class="world-map-section min-h-screen py-32 relative flex items-center justify-center border-t border-[#F8F8FF]/10">
+      
+      <!-- Parallax Image Background -->
+      <img id="world-bg-img" class="world-bg" src="p1_088_jp_横_沧海西极皮肤集合展示_0s_陈晓尧_all_1200x628.jpg" alt="World Map Topography">
+      
+      <div class="absolute inset-0 bg-gradient-to-t from-[#1A1A1B] via-[#1A1A1B]/80 to-transparent z-10"></div>
+      
+      <div class="relative z-20 max-w-4xl mx-auto px-6 text-center glass-panel p-12 rounded-lg m-4">
+        <h2 class="text-4xl md:text-6xl calligraphy mb-6">See the Tech in action</h2>
+        <p class="text-xl max-w-2xl mx-auto opacity-90 mb-8 font-hologram text-sm">
+          Most games sacrifice detail for distance. We didn't. See the world as it was meant to be seen.
+        </p>
+        <a href="https://to.wendiro.com/u?k=9db47141846349488810b469b5a18a32&via=30942" target="_blank" class="pulse-btn inline-block px-8 py-3 mx-auto mt-4 text-sm font-semibold">
+          Download for Windows
+        </a>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 border-t border-[#F8F8FF]/10 text-center text-xs opacity-50 relative z-20 bg-[#1A1A1B]">
+      <p class="font-mono">© 2050 Bio-Digital Architecture Division | WHERE WINDS MEET</p>
+      <p class="mt-2 text-[#FF4433]">NEURAL LINK: ESTABLISHED</p>
+    </footer>
+
+    <!-- Audio Toggle Button -->
+    <button id="audio-toggle" class="fixed bottom-6 right-6 z-50 pulse-btn px-4 py-2 text-xs font-bold flex items-center gap-2 bg-[#1A1A1B]/80 backdrop-blur-md rounded border border-[#FF4433]/50 hover:bg-[#FF4433]/20">
+      <span class="w-2 h-2 rounded-full bg-[#FF4433] pulse-dot"></span>
+      <span id="audio-text">UNMUTE AUDIO</span>
+    </button>
+  </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // 1. Wind-Drive Navigation Velocity Blur
+      const nav = document.getElementById('wind-nav');
+      let isScrolling;
+      
+      window.addEventListener('scroll', () => {
+        // Apply blur while scrolling
+        nav.classList.remove('nav-clear');
+        nav.classList.add('nav-blur');
+        
+        window.clearTimeout(isScrolling);
+        
+        // Restore clarity when scroll stops
+        isScrolling = setTimeout(() => {
+          nav.classList.remove('nav-blur');
+          nav.classList.add('nav-clear');
+        }, 150);
+
+        // 2. Parallax Effect for World-Seed Map
+        const worldSection = document.getElementById('world');
+        const worldBg = document.getElementById('world-bg-img');
+        const rect = worldSection.getBoundingClientRect();
+        
+        // If section is in view
+        if(rect.top < window.innerHeight && rect.bottom > 0) {
+          // Calculate percentage scrolled through the section
+          const scrollPercent = 1 - (rect.bottom / (window.innerHeight + rect.height));
+          // Move the background image up slightly (parallax)
+          worldBg.style.transform = `translateY(${scrollPercent * -15}%)`;
+        }
+      }, { passive: true });
+
+      // 3. Simple Biometric / Mouse Reactivity for pulse buttons
+      const buttons = document.querySelectorAll('.pulse-btn');
+      
+      document.addEventListener('mousemove', (e) => {
+        buttons.forEach(btn => {
+          const rect = btn.getBoundingClientRect();
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+          const distance = Math.sqrt(Math.pow(e.clientX - centerX, 2) + Math.pow(e.clientY - centerY, 2));
+          
+          if (distance < 200) {
+            // Apply slight magnetic pull
+            const pullX = (e.clientX - centerX) * 0.1;
+            const pullY = (e.clientY - centerY) * 0.1;
+            btn.style.transform = `translate(${pullX}px, ${pullY}px) scale(1.02)`;
+            btn.style.boxShadow = `0 0 ${30 - distance/10}px rgba(255, 68, 51, 0.4)`;
+          } else {
+            btn.style.transform = `translate(0, 0) scale(1)`;
+            btn.style.boxShadow = `none`;
+          }
+        });
+      });
+
+      // 4. Audio Controls Script
+      const audioBtn = document.getElementById('audio-toggle');
+      const audioText = document.getElementById('audio-text');
+      
+      const bgVideo = document.querySelector('.bg-canvas');
+      const characterVideo = document.querySelector('#identity video');
+      const videos = [bgVideo, characterVideo];
+      
+      let isMuted = true;
+
+      audioBtn.addEventListener('click', () => {
+        isMuted = !isMuted;
+        
+        // Background video volume scaled down heavily (15%)
+        bgVideo.muted = isMuted;
+        bgVideo.volume = 0.15;
+        
+        // Character Video volume at full (100%)
+        if(characterVideo) {
+          characterVideo.muted = isMuted;
+          characterVideo.volume = 1.0;
+        }
+
+        videos.forEach(v => {
+          if (v && !isMuted && v.paused) {
+            v.play().catch(e => console.log('Autoplay blocked:', e));
+          }
+        });
+        
+        if (isMuted) {
+          audioText.innerText = "UNMUTE AUDIO";
+          audioBtn.style.color = "var(--neon-cinnabar)";
+        } else {
+          audioText.innerText = "MUTE AUDIO";
+          audioBtn.style.color = "#F8F8FF";
+        }
+      });
+    });
+  </script>
+</body>
+</html>
