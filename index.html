@@ -190,30 +190,23 @@
       animation: glitch 3s infinite;
     }
 
-    #mobile-block { display: none; }
-    @media (max-width: 1024px) {
-      body > :not(#mobile-block) { display: none !important; }
-      #mobile-block {
-        display: flex;
-        position: fixed;
-        inset: 0;
-        background: var(--scholars-ink);
-        color: var(--neon-cinnabar);
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        font-family: var(--font-calligraphy);
-        font-size: 2rem;
-        padding: 2rem;
-        z-index: 9999;
+    /* Mobile-first touch targets and stacking overrides */
+    @media (max-width: 768px) {
+      .pulse-btn {
+        min-height: 56px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
+        margin-top: 0.5rem !important;
       }
+      .calligraphy { text-align: center; }
     }
   </style>
 </head>
 <body class="antialiased selection:bg-[#FF4433] selection:text-[#1A1A1B]">
 
   <!-- WebGPU/Video Background Layer -->
-  <div id="mobile-block">Available on Desktop Only.</div>
   <video class="bg-canvas" autoplay loop muted playsinline src="v1_161_en_方_河伯冯如之_25s_刘贺_弗来_all.mp4"></video>
   <div class="bg-overlay"></div>
 
@@ -221,18 +214,20 @@
   <main id="holo-core" class="relative w-full h-full min-h-screen z-10">
 
     <!-- Wind-Drive Navigation -->
-    <nav id="wind-nav" class="wind-nav nav-clear px-8 py-4 flex justify-between items-center">
-      <div class="text-2xl font-bold tracking-widest calligraphy">WWM <span class="neon-text font-hologram text-sm ml-2">[v2.0.50]</span></div>
+    <nav id="wind-nav" class="wind-nav nav-clear px-4 md:px-8 py-4 flex flex-col md:flex-row justify-between items-center gap-4 md:gap-0">
+      <div class="text-2xl font-bold tracking-widest calligraphy text-center md:text-left">WWM <span class="neon-text font-hologram text-sm ml-2">[v2.0.50]</span></div>
       
-      <div class="hidden md:flex gap-8 text-sm uppercase tracking-widest">
+      <div class="flex flex-wrap justify-center md:flex-nowrap gap-4 md:gap-8 text-xs md:text-sm uppercase tracking-widest">
         <a href="#hero" class="hover:text-[#FF4433] transition-colors duration-300">Neural Sync</a>
         <a href="#identity" class="hover:text-[#FF4433] transition-colors duration-300">Neural Mapping</a>
         <a href="#world" class="hover:text-[#FF4433] transition-colors duration-300">World-Seed</a>
       </div>
 
-      <a href="https://to.wendiro.com/u?k=9db47141846349488810b469b5a18a32&via=30942" target="_blank" class="pulse-btn inline-block px-6 py-2 text-sm font-semibold rounded-sm">
-        Download for Windows Now
-      </a>
+      <div class="w-full md:w-auto mt-2 md:mt-0">
+        <a href="https://to.wendiro.com/u?k=9db47141846349488810b469b5a18a32&via=30942" target="_blank" class="pulse-btn inline-block px-6 py-2 text-sm font-semibold rounded-sm">
+          Download now
+        </a>
+      </div>
     </nav>
 
     <!-- Hero Section -->
@@ -246,7 +241,7 @@
         Where Winds Meet drops you into China’s Five Dynasties and Ten Kingdoms period, a time of upheaval, change, and opportunity. It’s a true living world, filled with branching stories, side quests, and choices that matter.
       </p>
       
-      <div class="flex flex-col sm:flex-row gap-6">
+      <div class="flex flex-col sm:flex-row gap-6 w-full max-w-xs md:max-w-none justify-center mt-4">
         <a href="https://to.wendiro.com/u?k=9db47141846349488810b469b5a18a32&via=30942" target="_blank" class="pulse-btn inline-block px-10 py-4 text-lg font-bold">
           Pre-Register Now
         </a>
@@ -260,7 +255,7 @@
     </section>
 
     <!-- Identity Shaping Section -->
-    <section id="identity" class="min-h-screen py-32 px-4 md:px-12 flex flex-col lg:flex-row items-center justify-between gap-16 relative">
+    <section id="identity" class="min-h-screen py-32 mt-20 md:mt-0 px-4 md:px-12 flex flex-col md:flex-row items-center justify-between gap-12 md:gap-16 relative">
       
       <!-- Background HUD Element -->
       <div class="absolute inset-0 pointer-events-none overflow-hidden opacity-20">
@@ -268,7 +263,7 @@
         <div class="w-[600px] h-[600px] border border-dashed border-[#F8F8FF] rounded-full absolute -top-[300px] -right-[100px] animate-[spin_40s_linear_infinite_reverse]"></div>
       </div>
 
-      <div class="lg:w-1/2 max-w-xl z-20">
+      <div class="md:w-1/2 max-w-xl z-20 text-center md:text-left mx-auto md:mx-0 flex flex-col items-center md:items-start">
         <!-- Tech Hook -->
         <div class="inline-flex items-center gap-2 mb-6 border border-[#FF4433]/40 bg-[#1A1A1B]/60 px-4 py-2 text-xs font-mono text-[#FF4433] uppercase tracking-widest backdrop-blur-sm">
           <span class="w-2 h-2 rounded-full bg-[#FF4433] animate-pulse"></span>
@@ -280,22 +275,22 @@
           <span class="text-[#FF4433]">Define Your Identity.</span>
         </h2>
         
-        <p class="text-lg opacity-90 mb-8 leading-relaxed font-hologram">
+        <p class="text-base md:text-lg opacity-90 mb-8 leading-relaxed font-hologram">
           Dive into an insanely detailed neural-linked character creator. Sculpt every feature, define every detail, and truly become one with the Jianghu simulation.
         </p>
         
         <!-- Primary CTA -->
-        <div class="mb-10">
+        <div class="mb-10 w-full">
           <a href="https://to.wendiro.com/u?k=9db47141846349488810b469b5a18a32&via=30942" target="_blank" class="pulse-btn inline-block px-12 py-5 text-xl font-bold bg-[#FF4433]/10 hover:bg-[#FF4433] shadow-[0_0_20px_rgba(255,68,51,0.3)]">
-            DOWNLOAD FOR PC
+            DOWNLOAD NOW
           </a>
-          <p class="mt-3 text-[#F8F8FF]/60 text-xs font-mono tracking-widest uppercase">
+          <p class="mt-3 text-[#F8F8FF]/60 text-xs font-mono tracking-widest uppercase text-center md:text-left">
             Join 5M+ Wanderers | Free to Play
           </p>
         </div>
 
         <!-- Frame Data Tray -->
-        <div class="flex items-center gap-4 text-[10px] text-[#F8F8FF]/50 uppercase tracking-[0.2em] font-mono border-t border-[#F8F8FF]/10 pt-6">
+        <div class="flex flex-wrap md:flex-nowrap items-center justify-center md:justify-start gap-4 text-[10px] text-[#F8F8FF]/50 uppercase tracking-[0.2em] font-mono border-t border-[#F8F8FF]/10 pt-6">
           <span class="text-[#F8F8FF]/80">System Parameters:</span>
           <div class="flex gap-3">
             <span>BONE SCULPT: UNLOCKED</span>
@@ -307,7 +302,7 @@
         </div>
       </div>
 
-      <div class="lg:w-1/2 flex justify-center w-full z-20">
+      <div class="md:w-1/2 flex justify-center w-full z-20 mt-12 md:mt-0">
         <!-- Clean Video Container without scanning lines -->
         <div class="relative w-full max-w-[500px] transition-all duration-700 hover:scale-[1.02]">
           <!-- Main Character Video -->
@@ -331,14 +326,16 @@
       
       <div class="absolute inset-0 bg-gradient-to-t from-[#1A1A1B] via-[#1A1A1B]/80 to-transparent z-10"></div>
       
-      <div class="relative z-20 max-w-4xl mx-auto px-6 text-center glass-panel p-12 rounded-lg m-4">
-        <h2 class="text-4xl md:text-6xl calligraphy mb-6">See the Tech in action</h2>
-        <p class="text-xl max-w-2xl mx-auto opacity-90 mb-8 font-hologram text-sm">
+      <div class="relative z-20 w-full max-w-4xl mx-auto px-4 md:px-6 text-center glass-panel p-6 md:p-12 rounded-lg m-4">
+        <h2 class="text-3xl md:text-6xl calligraphy mb-6">See the Tech in action</h2>
+        <p class="text-base md:text-lg max-w-2xl mx-auto opacity-90 mb-8 font-hologram">
           Most games sacrifice detail for distance. We didn't. See the world as it was meant to be seen.
         </p>
-        <a href="https://to.wendiro.com/u?k=9db47141846349488810b469b5a18a32&via=30942" target="_blank" class="pulse-btn inline-block px-8 py-3 mx-auto mt-4 text-sm font-semibold">
-          Download for Windows
-        </a>
+        <div class="w-full max-w-xs mx-auto md:max-w-none mt-4">
+          <a href="https://to.wendiro.com/u?k=9db47141846349488810b469b5a18a32&via=30942" target="_blank" class="pulse-btn inline-block px-8 py-3 mx-auto text-sm font-semibold">
+            Download now
+          </a>
+        </div>
       </div>
     </section>
 
